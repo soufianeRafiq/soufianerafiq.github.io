@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<!-- La balise <html> délimite le document et indique la langue (FR) -->
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+
+    <!-- BALISE VIEWPORT : clé du responsive (largeur réelle de l'écran mobile). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Portfolio de Soufiane Rafiq — étudiant en 2e année à l'EPSI Toulouse : systèmes, réseaux et développement. En recherche d'alternance.">
+    <meta name="theme-color" content="#0a0f1e">
+
+    <title>Soufiane Rafiq — Systèmes, Réseaux &amp; Développement</title>
+
+    <!-- Polices distinctives -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Active les effets seulement si JS est dispo (sinon tout reste visible) -->
+    <script>document.documentElement.classList.add('js');</script>
+</head>
+
+<body>
+    <!-- Barre de progression de lecture (remplie par le JS au défilement) -->
+    <div class="scroll-progress" id="progress" aria-hidden="true"></div>
+
+    <!-- ============================================================
+         <header> : entête de page (balise SÉMANTIQUE)
+         ============================================================ -->
+    <header class="site-header" id="accueil">
+
+        <!-- <nav> : menu de navigation (balise SÉMANTIQUE) -->
+        <nav class="nav" aria-label="Navigation principale">
+            <a href="#accueil" class="nav__logo">
+                <span class="nav__logo-bracket">&lt;</span>SR<span class="nav__logo-bracket">/&gt;</span>
+            </a>
+
+            <button class="nav__burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false"
+                aria-controls="menu">
+                <span></span><span></span><span></span>
+            </button>
+
+            <ul class="nav__menu" id="menu">
+                <li><a href="#profil">Profil</a></li>
+                <li><a href="#competences">Compétences</a></li>
+                <li><a href="#experience">Expérience</a></li>
+                <li><a href="#formation">Formation</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Changer de thème"
+                        title="Changer de thème">
+                        <span class="theme-toggle__icon">&#9680;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Bandeau d'accueil (hero) -->
+        <div class="hero">
+            <div class="hero__intro">
+                <p class="eyebrow"><span class="eyebrow__dot"></span>disponible — alternance 2026<span class="cursor">_</span></p>
+                <h1 class="hero__name">Soufiane Rafiq</h1>
+                <p class="hero__role">Systèmes, Réseaux &amp; Développement</p>
+                <p class="hero__pitch">
+                    Étudiant en 2<sup>e</sup> année à l'EPSI Toulouse, passionné par les infrastructures
+                    systèmes et réseaux. Je recherche une <strong>alternance</strong> pour mettre à profit mes
+                    compétences en systèmes, réseaux, développement et gestion d'infrastructures IT.
+                </p>
+
+                <!-- Boutons (FLEXBOX) -->
+                <div class="hero__actions">
+                    <a class="btn btn--primary" href="mailto:soufianerafiq1994@gmail.com">Me contacter <span class="btn__arrow">&rarr;</span></a>
+                    <a class="btn btn--ghost" href="tel:+33609888976">06 09 88 89 76</a>
+                    <a class="btn btn--ghost" href="https://www.linkedin.com/in/soufiane-rafiq-9bb8a7332/"
+                        target="_blank" rel="noopener">LinkedIn</a>
+                </div>
+
+                <!-- Stats (FLEXBOX) -->
+                <ul class="stats">
+                    <li><span class="stats__num">2</span><span class="stats__label">stages réalisés</span></li>
+                    <li><span class="stats__num">2<sup>e</sup></span><span class="stats__label">année · EPSI</span></li>
+                    <li><span class="stats__num">15+</span><span class="stats__label">technologies</span></li>
+                </ul>
+            </div>
+
+            <!-- PHOTO (bonus +1). image.jpg = ta photo ; repli auto sur photo.svg si absente -->
+            <figure class="hero__photo">
+                <img src="image.jpg" alt="Photo de Soufiane Rafiq" width="280" height="280"
+                    onerror="this.onerror=null;this.src='photo.svg';">
+                <figcaption class="hero__badge">2<sup>e</sup> année · EPSI Toulouse</figcaption>
+            </figure>
+        </div>
+
+        <a href="#profil" class="scroll-hint" aria-label="Descendre">&darr;</a>
+    </header>
+
+    <!-- ============================================================
+         .layout : GRID (main + aside côte à côte sur grand écran)
+         ============================================================ -->
+    <div class="layout">
+
+        <!-- <main> : contenu principal (balise SÉMANTIQUE) -->
+        <main>
+
+            <!-- ---------- PROFIL ---------- -->
+            <section id="profil" class="section reveal">
+                <h2 class="section__title"><span class="section__num">01</span> Profil</h2>
+                <p class="lead">
+                    Curieux et rigoureux, j'aime comprendre comment fonctionnent les environnements
+                    informatiques de bout en bout : administrer des serveurs Windows et Linux, gérer un
+                    annuaire Active Directory, virtualiser avec VMware, mais aussi développer des
+                    applications web et des API. Mon objectif : contribuer au bon fonctionnement et à la
+                    sécurisation des infrastructures IT.
+                </p>
+            </section>
+
+            <!-- ---------- COMPÉTENCES (GRID) ---------- -->
+            <section id="competences" class="section reveal">
+                <h2 class="section__title"><span class="section__num">02</span> Compétences</h2>
+
+                <!-- .skills-grid : CSS GRID auto-fit (1 colonne mobile, plusieurs sur grand écran) -->
+                <div class="skills-grid">
+                    <article class="card skill reveal">
+                        <h3 class="skill__title">Systèmes / Infrastructure</h3>
+                        <ul class="tags">
+                            <li>Linux</li><li>Windows Server</li><li>Active Directory</li><li>VMware</li>
+                        </ul>
+                    </article>
+
+                    <article class="card skill reveal">
+                        <h3 class="skill__title">Développement</h3>
+                        <ul class="tags">
+                            <li>Python</li><li>Java</li><li>PHP</li><li>JavaScript</li><li>Angular</li><li>API REST</li>
+                        </ul>
+                    </article>
+
+                    <article class="card skill reveal">
+                        <h3 class="skill__title">Web</h3>
+                        <ul class="tags">
+                            <li>HTML</li><li>CSS</li><li>Angular</li><li>API REST</li>
+                        </ul>
+                    </article>
+
+                    <article class="card skill reveal">
+                        <h3 class="skill__title">Bases de données</h3>
+                        <ul class="tags">
+                            <li>SQL</li><li>SQL Server</li><li>MySQL</li><li>MariaDB</li>
+                        </ul>
+                    </article>
+
+                    <article class="card skill reveal">
+                        <h3 class="skill__title">Outils</h3>
+                        <ul class="tags">
+                            <li>GitLab</li><li>SSH</li><li>ServiceNow</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <!-- ---------- EXPÉRIENCE (timeline) ---------- -->
+            <section id="experience" class="section reveal">
+                <h2 class="section__title"><span class="section__num">03</span> Expérience</h2>
+
+                <div class="timeline">
+                    <article class="card xp reveal">
+                        <div class="xp__head">
+                            <h3 class="xp__role">Stagiaire IT — Systèmes &amp; Réseaux</h3>
+                            <time class="xp__date" datetime="2025-12">Déc. 2025 — Janv. 2026</time>
+                        </div>
+                        <p class="xp__company">AKKODIS — Blagnac</p>
+                        <ul class="xp__list">
+                            <li>Administration d'environnements Windows Server</li>
+                            <li>Gestion des utilisateurs dans Active Directory</li>
+                            <li>Configuration de services DNS</li>
+                            <li>Virtualisation avec VMware</li>
+                            <li>Gestion et suivi d'incidents via ServiceNow</li>
+                            <li>Support technique et gestion des tickets</li>
+                        </ul>
+                    </article>
+
+                    <article class="card xp reveal">
+                        <div class="xp__head">
+                            <h3 class="xp__role">Stagiaire IT — Développement</h3>
+                            <time class="xp__date" datetime="2025-05">Mai 2025 — Juin 2025</time>
+                        </div>
+                        <p class="xp__company">AKKODIS — Blagnac</p>
+                        <ul class="xp__list">
+                            <li>Développement d'une application web interne</li>
+                            <li>Création d'une API avec Python (FastAPI)</li>
+                            <li>Développement du frontend avec Angular</li>
+                            <li>Connexion à une base de données SQL Server</li>
+                            <li>Authentification LDAP avec JWT</li>
+                            <li>Gestion du code avec GitLab, environnement Linux via SSH</li>
+                        </ul>
+                    </article>
+                </div>
+            </section>
+
+            <!-- ---------- FORMATION (timeline) ---------- -->
+            <section id="formation" class="section reveal">
+                <h2 class="section__title"><span class="section__num">04</span> Formation</h2>
+                <div class="timeline">
+                    <article class="card xp reveal">
+                        <div class="xp__head">
+                            <h3 class="xp__role">Bachelor SysOps (Bac+3)</h3>
+                            <time class="xp__date" datetime="2026">2026 — 2027</time>
+                        </div>
+                        <p class="xp__company">EPSI — Toulouse</p>
+                        <p>Administration, sécurisation et automatisation des infrastructures systèmes, réseaux et
+                            Cloud.</p>
+                    </article>
+
+                    <article class="card xp reveal">
+                        <div class="xp__head">
+                            <h3 class="xp__role">Bac+2 Informatique — Socle Numérique</h3>
+                            <time class="xp__date" datetime="2024">2024 — 2026</time>
+                        </div>
+                        <p class="xp__company">EPSI — Toulouse</p>
+                        <ul class="xp__list">
+                            <li>1<sup>re</sup> année : développement web (Angular, Python, API REST)</li>
+                            <li>2<sup>e</sup> année : administration systèmes &amp; réseaux (Linux, Windows Server,
+                                Active Directory, VMware)</li>
+                            <li>Projets collaboratifs : GitLab, SSH, méthodologie Agile</li>
+                        </ul>
+                    </article>
+
+                    <article class="card xp reveal">
+                        <div class="xp__head">
+                            <h3 class="xp__role">Baccalauréat Technique</h3>
+                            <time class="xp__date" datetime="2024">2024</time>
+                        </div>
+                        <p class="xp__company">Casablanca, Maroc</p>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <!-- <aside> : barre latérale (balise SÉMANTIQUE) -->
+        <aside class="sidebar" id="contact">
+            <div class="card sidebar__card reveal">
+                <h2 class="sidebar__title">Contact</h2>
+                <address class="sidebar__contact">
+                    <a href="mailto:soufianerafiq1994@gmail.com">soufianerafiq1994@gmail.com</a>
+                    <a href="tel:+33609888976">06 09 88 89 76</a>
+                    <a href="https://www.linkedin.com/in/soufiane-rafiq-9bb8a7332/" target="_blank"
+                        rel="noopener">LinkedIn — Soufiane Rafiq</a>
+                    <span>Toulouse, France</span>
+                </address>
+            </div>
+
+            <div class="card sidebar__card reveal">
+                <h2 class="sidebar__title">Langues</h2>
+                <ul class="sidebar__list">
+                    <li>Français <span class="dim">— courant</span></li>
+                    <li>Anglais <span class="dim">— niveau professionnel</span></li>
+                    <li>Arabe <span class="dim">— langue maternelle</span></li>
+                </ul>
+            </div>
+
+            <div class="card sidebar__card reveal">
+                <h2 class="sidebar__title">Soft skills</h2>
+                <ul class="sidebar__list">
+                    <li>Esprit d'analyse</li>
+                    <li>Organisation &amp; gestion du temps</li>
+                    <li>Travail en équipe</li>
+                    <li>Adaptabilité</li>
+                    <li>Curiosité technique</li>
+                </ul>
+            </div>
+
+            <div class="card sidebar__card reveal">
+                <h2 class="sidebar__title">Centres d'intérêt</h2>
+                <ul class="sidebar__list">
+                    <li>Le monde digital</li>
+                    <li>Sport collectif</li>
+                    <li>Musculation</li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <!-- <footer> : pied de page (balise SÉMANTIQUE) -->
+    <footer class="site-footer">
+        <p>Conçu par Soufiane Rafiq</p>
+        <a href="#accueil" class="footer__top">&#8593; Haut de page</a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

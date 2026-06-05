@@ -1,0 +1,911 @@
+/* =====================================================================
+   PORTFOLIO — CV responsive
+   Approche MOBILE FIRST : style mobile d'abord, puis media queries
+   "min-width" pour tablette/PC. Breakpoints du cours (Bootstrap) :
+   SM 576 / MD 768 / LG 992 / XL 1200.
+   Mise en page : CSS GRID (layout principal + grille de compétences)
+   et FLEXBOX (nav, hero, boutons, en-têtes, footer).
+   ===================================================================== */
+
+/* ---------- Variables (thème sombre par défaut) ---------- */
+:root {
+    --bg: #0a0f1e;
+    --bg-2: #0e1631;
+    --card: #111a33;
+    --card-2: #16203d;
+    --line: #233353;
+    --line-soft: #1b2747;
+    --text: #eaf0fb;
+    --muted: #9fb0d0;
+    --accent: #4fe3b0;
+    --accent-2: #6ea8fe;
+    --accent-ink: #06231a;
+    --glow: rgba(79, 227, 176, 0.18);
+    --radius: 16px;
+    --maxw: 1140px;
+    --shadow: 0 14px 40px rgba(0, 0, 0, 0.38);
+    --shadow-hover: 0 22px 55px rgba(0, 0, 0, 0.48);
+}
+
+/* ---------- Thème clair (bouton ◐ -> data-theme="light") ---------- */
+:root[data-theme="light"] {
+    --bg: #f3f6fc;
+    --bg-2: #ffffff;
+    --card: #ffffff;
+    --card-2: #eef3fb;
+    --line: #d8e1f1;
+    --line-soft: #e7edf8;
+    --text: #0e1730;
+    --muted: #51618a;
+    --accent: #0c9d72;
+    --accent-2: #2f6bff;
+    --accent-ink: #ffffff;
+    --glow: rgba(12, 157, 114, 0.14);
+    --shadow: 0 14px 40px rgba(25, 50, 100, 0.10);
+    --shadow-hover: 0 20px 50px rgba(25, 50, 100, 0.16);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+    /* pour que les ancres ne passent pas sous la barre de nav */
+}
+
+body {
+    margin: 0;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-weight: 400;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.65;
+    overflow-x: hidden;
+    /* zéro défilement HORIZONTAL (pénalisé en RWD) */
+    transition: background .35s ease, color .35s ease;
+}
+
+/* Fond : halos colorés doux, en mouvement très lent (sans quadrillage) */
+body::before {
+    content: "";
+    position: fixed;
+    inset: -10%;
+    z-index: -2;
+    background-image:
+        radial-gradient(700px 460px at 78% -8%, var(--glow), transparent 60%),
+        radial-gradient(620px 420px at 8% 12%, rgba(110, 168, 254, .10), transparent 60%);
+    opacity: .9;
+    animation: drift 26s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+
+@keyframes drift {
+    to {
+        transform: translate3d(-18px, -12px, 0);
+    }
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    /* images responsive : ne dépassent jamais */
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1,
+h2,
+h3 {
+    font-family: 'Sora', sans-serif;
+    line-height: 1.12;
+    margin: 0;
+}
+
+/* Conteneurs centrés (largeur relative) */
+.nav,
+.hero,
+.layout,
+.site-footer {
+    width: min(92%, var(--maxw));
+    margin-inline: auto;
+}
+
+/* ---------- Barre de progression de lecture ---------- */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    z-index: 100;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 12px var(--glow);
+    transition: width .1s linear;
+}
+
+/* =====================================================================
+   NAVIGATION (FLEXBOX) + burger mobile
+   ===================================================================== */
+.site-header {
+    position: relative;
+    min-height: 100vh;
+    /* hero plein écran à l'ouverture */
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 2rem;
+}
+
+.nav {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .9rem 0;
+    flex-wrap: wrap;
+    backdrop-filter: blur(8px);
+}
+
+.nav__logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 1.3rem;
+    color: var(--text);
+    letter-spacing: 1px;
+}
+
+.nav__logo:hover {
+    text-decoration: none;
+}
+
+.nav__logo-bracket {
+    color: var(--accent);
+}
+
+.nav__menu {
+    list-style: none;
+    margin: .6rem 0 0;
+    padding: .6rem;
+    display: none;
+    flex-direction: column;
+    gap: .15rem;
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.nav__menu.is-open {
+    display: flex;
+    animation: menuIn .25s ease;
+}
+
+@keyframes menuIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+}
+
+.nav__menu a {
+    display: block;
+    padding: .65rem .6rem;
+    color: var(--muted);
+    font-weight: 500;
+    border-radius: 9px;
+    transition: color .2s, background .2s;
+}
+
+.nav__menu a:hover,
+.nav__menu a.is-active {
+    color: var(--text);
+    background: var(--card-2);
+    text-decoration: none;
+}
+
+.nav__burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 44px;
+    height: 42px;
+    padding: 0 11px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    cursor: pointer;
+}
+
+.nav__burger span {
+    display: block;
+    height: 2px;
+    width: 100%;
+    background: var(--text);
+    transition: transform .25s ease, opacity .25s ease;
+}
+
+.nav__burger.is-open span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.nav__burger.is-open span:nth-child(2) {
+    opacity: 0;
+}
+
+.nav__burger.is-open span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+.theme-toggle {
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--text);
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    transition: border-color .2s, transform .2s;
+}
+
+.theme-toggle:hover {
+    border-color: var(--accent);
+    transform: rotate(180deg);
+}
+
+/* =====================================================================
+   HERO (FLEXBOX) + animation d'entrée échelonnée
+   ===================================================================== */
+.hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 0;
+}
+
+/* Animation d'entrée : chaque élément apparaît avec un léger décalage */
+.js .hero__intro>*,
+.js .hero__photo {
+    opacity: 0;
+    animation: heroIn .7s cubic-bezier(.2, .7, .2, 1) forwards;
+}
+
+.js .hero__intro>*:nth-child(1) { animation-delay: .05s; }
+.js .hero__intro>*:nth-child(2) { animation-delay: .15s; }
+.js .hero__intro>*:nth-child(3) { animation-delay: .25s; }
+.js .hero__intro>*:nth-child(4) { animation-delay: .35s; }
+.js .hero__intro>*:nth-child(5) { animation-delay: .45s; }
+.js .hero__photo { animation-delay: .3s; }
+
+@keyframes heroIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent);
+    font-size: .82rem;
+    letter-spacing: .5px;
+    margin: 0 0 .7rem;
+    padding: .35rem .7rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+
+.eyebrow__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 var(--glow);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 var(--accent); }
+    70% { box-shadow: 0 0 0 7px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.cursor {
+    animation: blink 1.1s steps(1) infinite;
+    color: var(--accent);
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+.hero__name {
+    font-size: clamp(2.4rem, 8vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(180deg, var(--text), color-mix(in srgb, var(--text) 65%, var(--muted)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero__role {
+    color: var(--accent-2);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: clamp(1rem, 2.6vw, 1.3rem);
+    margin: .6rem 0 1rem;
+}
+
+.hero__pitch {
+    color: var(--muted);
+    max-width: 56ch;
+    font-size: 1.04rem;
+    margin: 0;
+}
+
+.hero__pitch strong {
+    color: var(--text);
+    font-weight: 600;
+}
+
+/* Boutons (FLEXBOX) */
+.hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .8rem;
+    margin-top: 1.6rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .8rem 1.3rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: .97rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .25s ease, border-color .2s, color .2s, background .2s;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    text-decoration: none;
+}
+
+.btn--primary {
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--accent-2)));
+    color: var(--accent-ink);
+    box-shadow: 0 10px 26px var(--glow);
+}
+
+.btn--primary:hover {
+    box-shadow: 0 16px 36px var(--glow);
+}
+
+.btn__arrow {
+    transition: transform .2s ease;
+}
+
+.btn--primary:hover .btn__arrow {
+    transform: translateX(4px);
+}
+
+.btn--ghost {
+    background: transparent;
+    border-color: var(--line);
+    color: var(--text);
+}
+
+.btn--ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Stats (FLEXBOX) */
+.stats {
+    list-style: none;
+    margin: 2rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.6rem 2.2rem;
+}
+
+.stats li {
+    display: flex;
+    flex-direction: column;
+}
+
+.stats__num {
+    font-family: 'Sora', sans-serif;
+    font-weight: 700;
+    font-size: 1.7rem;
+    color: var(--accent);
+    line-height: 1;
+}
+
+.stats__label {
+    font-size: .78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    margin-top: .3rem;
+}
+
+/* Photo : cadre rond + brackets décoratifs (clin d'œil au support de cours) */
+.hero__photo {
+    position: relative;
+    margin: 0;
+    align-self: center;
+    padding: 14px;
+}
+
+/* Les 2 pseudo-éléments dessinent 4 coins/brackets */
+.hero__photo::before,
+.hero__photo::after {
+    content: "";
+    position: absolute;
+    width: 34px;
+    height: 34px;
+    border: 2px solid var(--accent);
+}
+
+.hero__photo::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+    border-top-left-radius: 8px;
+}
+
+.hero__photo::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 8px;
+}
+
+.hero__photo img {
+    width: clamp(170px, 44vw, 250px);
+    height: clamp(170px, 44vw, 250px);
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--card-2);
+    box-shadow: var(--shadow);
+    background: var(--card);
+}
+
+.hero__badge {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    background: var(--card);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .72rem;
+    padding: .28rem .75rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow);
+}
+
+/* Indice de défilement sous le hero */
+.scroll-hint {
+    align-self: center;
+    margin-top: auto;
+    font-size: 1.4rem;
+    color: var(--muted);
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    animation: bob 1.8s ease-in-out infinite;
+}
+
+.scroll-hint:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+@keyframes bob {
+    50% { transform: translateY(7px); }
+}
+
+/* =====================================================================
+   LAYOUT PRINCIPAL (CSS GRID) : main + aside
+   ===================================================================== */
+.layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-top: 2rem;
+}
+
+/* ---------- Révélation au défilement (sûr : visible si pas de JS) ---------- */
+.js .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+}
+
+.reveal.in-view {
+    opacity: 1;
+    transform: none;
+    transition: opacity .6s ease, transform .6s cubic-bezier(.2, .7, .2, 1);
+}
+
+/* léger décalage en cascade pour les cartes voisines */
+.skills-grid .reveal:nth-child(2).in-view,
+.timeline .reveal:nth-child(2).in-view,
+.sidebar .reveal:nth-child(2).in-view { transition-delay: .08s; }
+.skills-grid .reveal:nth-child(3).in-view,
+.sidebar .reveal:nth-child(3).in-view { transition-delay: .16s; }
+.skills-grid .reveal:nth-child(4).in-view,
+.sidebar .reveal:nth-child(4).in-view { transition-delay: .24s; }
+.skills-grid .reveal:nth-child(5).in-view { transition-delay: .32s; }
+
+/* ---------- Sections ---------- */
+.section {
+    margin-bottom: 2.8rem;
+    scroll-margin-top: 90px;
+}
+
+.section__title {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 700;
+    display: flex;
+    align-items: baseline;
+    gap: .7rem;
+    margin-bottom: 1.3rem;
+    padding-bottom: .7rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.section__num {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent);
+    font-size: .95rem;
+    font-weight: 600;
+}
+
+.lead {
+    color: var(--muted);
+    font-size: 1.05rem;
+    margin: 0;
+    max-width: 70ch;
+}
+
+/* ---------- Cartes ---------- */
+.card {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 1.35rem;
+    box-shadow: var(--shadow);
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+.skill:hover,
+.xp:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+    box-shadow: var(--shadow-hover);
+}
+
+/* =====================================================================
+   COMPÉTENCES — CSS GRID auto-fit
+   ===================================================================== */
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.skill__title {
+    font-size: 1.06rem;
+    margin-bottom: .9rem;
+    color: var(--text);
+    padding-left: .8rem;
+    border-left: 3px solid var(--accent);
+}
+
+.tags {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .45rem;
+}
+
+.tags li {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .78rem;
+    padding: .34rem .62rem;
+    border-radius: 8px;
+    background: var(--card-2);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    transition: color .2s, border-color .2s, transform .2s;
+}
+
+.tags li:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+/* =====================================================================
+   EXPÉRIENCE / FORMATION — timeline avec trait vertical
+   ===================================================================== */
+.timeline {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding-left: 1.6rem;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: linear-gradient(var(--accent), transparent);
+}
+
+.timeline .xp::before {
+    content: "";
+    position: absolute;
+    left: -1.6rem;
+    top: 1.7rem;
+    width: 11px;
+    height: 11px;
+    margin-left: .5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--bg);
+}
+
+.xp__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: .4rem;
+}
+
+.xp__role {
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.xp__date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .8rem;
+    color: var(--accent);
+    white-space: nowrap;
+}
+
+.xp__company {
+    color: var(--accent-2);
+    font-weight: 500;
+    margin: .25rem 0 .7rem;
+}
+
+.xp__list {
+    margin: 0;
+    padding-left: 1.1rem;
+    color: var(--muted);
+}
+
+.xp__list li {
+    margin-bottom: .3rem;
+}
+
+/* =====================================================================
+   SIDEBAR (aside)
+   ===================================================================== */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.sidebar__card:hover {
+    border-color: color-mix(in srgb, var(--accent-2) 45%, var(--line));
+}
+
+.sidebar__title {
+    font-size: 1rem;
+    margin-bottom: .8rem;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+.sidebar__title::before {
+    content: "# ";
+    color: var(--accent);
+}
+
+.sidebar__contact {
+    font-style: normal;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.sidebar__contact a,
+.sidebar__contact span {
+    color: var(--muted);
+    word-break: break-word;
+    transition: color .2s;
+}
+
+.sidebar__contact a:hover {
+    color: var(--accent);
+}
+
+.sidebar__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    color: var(--text);
+}
+
+.sidebar__list li {
+    padding: .35rem 0;
+    border-bottom: 1px dashed var(--line);
+}
+
+.sidebar__list li:last-child {
+    border-bottom: none;
+}
+
+.dim {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+/* =====================================================================
+   FOOTER (FLEXBOX)
+   ===================================================================== */
+.site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: .8rem;
+    padding: 2.2rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.footer__top {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: .85rem;
+}
+
+/* =====================================================================
+   MEDIA QUERIES (cf. cours, partie III) — du mobile vers le PC
+   ===================================================================== */
+
+/* ----- SM : ≥ 576px (smartphone paysage) ----- */
+@media screen and (min-width: 576px) {
+    .hero__pitch { font-size: 1.08rem; }
+}
+
+/* ----- MD : ≥ 768px (tablette) ----- */
+@media screen and (min-width: 768px) {
+
+    /* hero en 2 colonnes : texte + photo côte à côte */
+    .hero {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 3rem;
+    }
+
+    .hero__intro { flex: 1; }
+    .hero__photo { align-self: auto; }
+
+    .skills-grid {
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+}
+
+/* ----- LG : ≥ 992px (PC) ----- */
+@media screen and (min-width: 992px) {
+
+    /* GRID principale : contenu large (main) + sidebar */
+    .layout {
+        grid-template-columns: minmax(0, 2.2fr) minmax(270px, 1fr);
+        gap: 2.8rem;
+        align-items: start;
+    }
+
+    /* menu en ligne, plus de burger */
+    .nav__burger { display: none; }
+
+    .nav__menu {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: auto;
+        margin: 0;
+        padding: 0;
+        gap: .3rem;
+        background: none;
+        border: none;
+        box-shadow: none;
+    }
+
+    .sidebar {
+        position: sticky;
+        top: 5rem;
+    }
+}
+
+/* ----- XL : ≥ 1200px (grand écran) ----- */
+@media screen and (min-width: 1200px) {
+    .section { margin-bottom: 3.2rem; }
+}
+
+/* ----- Accessibilité : réduire les animations si demandé ----- */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+
+    /* on s'assure que rien ne reste caché */
+    .js .reveal,
+    .js .hero__intro>*,
+    .js .hero__photo {
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
